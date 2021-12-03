@@ -128,7 +128,7 @@ func main(){
 	fmt.Println("close handler...")
 
 
-	memset(uintptr(unsafe.Pointer(&wcPath)),0, unsafe.Sizeof(wcPath))
+	memset(uintptr(unsafe.Pointer(&wcPath)),0, syscall.MAX_PATH)
 	windows.GetModuleFileName(0,&wcPath[0],syscall.MAX_PATH)
 
 	hCurrent = openHndl(&wcPath[0])
@@ -156,5 +156,4 @@ func main(){
 	fmt.Print("Press 'Enter' to continue...")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')
 
-}
 }
