@@ -107,7 +107,9 @@ func main(){
 	wcPath := make([]uint16, syscall.MAX_PATH)
 	memset(uintptr(unsafe.Pointer(&wcPath[0])),0, syscall.MAX_PATH)
 
-	windows.GetModuleFileName(0,&wcPath[0],syscall.MAX_PATH)
+	modkernel32 := syscall.NewLazyDLL("kernel32.dll")
+	gmfn := modkernel32.NewProc("GetModuleFileNameW")
+	syscall.Syscall(gmfn.Addr(), 3,0, uintptr(unsafe.Pointer(&wcPath[0])), uintptr(syscall.MAX_PATH))
 
 	hCurrent := openHndl(&wcPath[0])
 	if hCurrent == ^uintptr(0) || hCurrent == 0{
@@ -129,7 +131,7 @@ func main(){
 
 
 	memset(uintptr(unsafe.Pointer(&wcPath)),0, syscall.MAX_PATH)
-	windows.GetModuleFileName(0,&wcPath[0],syscall.MAX_PATH)
+	syscall.Syscall(gmfn.Addr(), 3,0, uintptr(unsafe.Pointer(&wcPath[0])), uintptr(syscall.MAX_PATH))
 
 	hCurrent = openHndl(&wcPath[0])
 
