@@ -104,6 +104,8 @@ func GetRandomString(n int) string {
 }
 
 func main(){
+	
+	//解决内存溢出
 	wcPath := make([]uint16, syscall.MAX_PATH)
 	memset(uintptr(unsafe.Pointer(&wcPath[0])),0, syscall.MAX_PATH)
 
