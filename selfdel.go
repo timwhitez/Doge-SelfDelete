@@ -104,12 +104,12 @@ func GetRandomString(n int) string {
 }
 
 func main(){
-	var wcPath uint16
-	memset(uintptr(unsafe.Pointer(&wcPath)),0, unsafe.Sizeof(wcPath))
+	wcPath := make([]uint16, syscall.MAX_PATH)
+	memset(uintptr(unsafe.Pointer(&wcPath[0])),0, syscall.MAX_PATH)
 
-	windows.GetModuleFileName(0,&wcPath,syscall.MAX_PATH)
+	windows.GetModuleFileName(0,&wcPath[0],syscall.MAX_PATH)
 
-	hCurrent := openHndl(&wcPath)
+	hCurrent := openHndl(&wcPath[0])
 	if hCurrent == ^uintptr(0) || hCurrent == 0{
 		fmt.Println("handle err")
 		os.Exit(0)
@@ -129,9 +129,9 @@ func main(){
 
 
 	memset(uintptr(unsafe.Pointer(&wcPath)),0, unsafe.Sizeof(wcPath))
-	windows.GetModuleFileName(0,&wcPath,syscall.MAX_PATH)
+	windows.GetModuleFileName(0,&wcPath[0],syscall.MAX_PATH)
 
-	hCurrent = openHndl(&wcPath)
+	hCurrent = openHndl(&wcPath[0])
 
 	if hCurrent == ^uintptr(0) || hCurrent == 0{
 		fmt.Println("handle2 err")
@@ -156,4 +156,5 @@ func main(){
 	fmt.Print("Press 'Enter' to continue...")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')
 
+}
 }
