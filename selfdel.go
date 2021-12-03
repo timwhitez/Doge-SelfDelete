@@ -4,13 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"golang.org/x/sys/windows"
+	"math/rand"
 	"os"
 	"syscall"
+	"time"
 	"unicode/utf16"
 	"unsafe"
 )
 
-var DS_STREAM_RENAME = ":wtfbbq"
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func openHndl(pwPath *uint16) uintptr {
 	//hndl,e := syscall.CreateFile(pwPath,windows.DELETE,0,nil,windows.OPEN_EXISTING,windows.FILE_ATTRIBUTE_NORMAL,0)
@@ -22,7 +26,7 @@ func openHndl(pwPath *uint16) uintptr {
 }
 
 func renameHndl(hndl uintptr)error{
-
+	DS_STREAM_RENAME := ":"+GetRandomString(6)
 
 	type FILE_RENAME_INFO struct {
 		Flags          uint32
@@ -64,7 +68,6 @@ func mkwinpathslice(path string) []uint16 {
 }
 
 
-
 func depositeHndl(hndl uintptr) error{
 	type FILE_DISPOSITION_INFO struct {
 		DeleteFile uint32
@@ -88,6 +91,16 @@ func memset(ptr uintptr, c byte, n uintptr){
 		pByte:=(*byte)(unsafe.Pointer(ptr+1))
 		*pByte = c
 	}
+}
+
+func GetRandomString(n int) string {
+	str := "abcdefghijklmnopqrstuvwxyz"
+	bytes := []byte(str)
+	var result []byte
+	for i := 0; i < n; i++ {
+		result = append(result, bytes[rand.Intn(len(bytes))])
+	}
+	return string(result)
 }
 
 func main(){
